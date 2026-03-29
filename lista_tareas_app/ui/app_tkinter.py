@@ -343,10 +343,10 @@ class AppTkinter:
 
         for tarea in tareas:
             if tarea.completada:
-                estado_texto = "✔  Completada"
+                estado_texto = "✅  Completada"
                 tag = ("completada",)   # Verde
             else:
-                estado_texto = "✗  Pendiente"
+                estado_texto = "❌  Pendiente"
                 tag = ("pendiente",)    # Rojo
         
             iid = self._tree.insert(
