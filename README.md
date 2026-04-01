@@ -156,31 +156,6 @@ self._tree.bind("<Double-1>", self._doble_click)
 
 ---
 
-## 📦 Ejecutable con PyInstaller
-
-```bash
-
-1. pip install pyinstaller
-2. cd lista_tareas_app
-3. pyinstaller --noconsole --onefile --name ListaTareasApp main.py
-
-
-📁 Ubicación del ejecutable:
-
-
-S15-POO-TareasGUI--Sigcha-Joselyn/ lista_tareas_app/ dist/ListaTareasApp.exe
-
-```
-> **Nota**: La carpeta `build/` y el archivo `.spec` son generados
-> automáticamente y están excluidos del repositorio via `.gitignore`.
-
-
-## 📝Aplicación ejecutada:
-
-![alt text](image.png)
-
----
-
 ## 🧠 Buenas prácticas aplicadas
 
 - ✔️ Programación Orientada a Objetos (POO)  
