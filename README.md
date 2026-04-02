@@ -6,35 +6,44 @@ Aplicación de escritorio tipo *To-Do List* desarrollada con *Python + Tkinter*,
 - Arquitectura modular por capas (Modelo → Servicio → UI → main)
 - Manejo de eventos de usuario (teclado y ratón)
 
+Esta versión corresponde a una *evolución del sistema base (Semana 15)*, incorporando mejoras en la experiencia de usuario mediante:
+
+- Implementación de *atajos de teclado*
+- Feedback visual dinámico en tiempo real de los eventos o atajos
+- Interacción más rápida, eficiente y accesible
+
+La aplicación permite agregar, completar y eliminar tareas de forma sencilla, brindando una experiencia fluida y moderna.
+
 ---
 
 ## 🎯 Objetivo del Proyecto
 
-Desarrollar una aplicación interactiva que permita gestionar tareas diarias, cumpliendo con:
+Desarrollar una aplicación interactiva que permita gestionar tareas diarias, cumpliendo con los siguientes criterios:
 
 - Separación de responsabilidades por capas  
 - Interfaz gráfica funcional y reactiva  
-- Manejo de eventos con .bind()  
-- Feedback visual claro del estado de las tareas  
-- Generación de ejecutable con PyInstaller  
+- Manejo de eventos con `.bind()` (teclaro y ratón)  
+- Incorporar *atajos de teclado* para mejorar la interacción
+- Feedback visual claro y dinámico del estado de las tareas y acciones del usuario
+- Reutilizar y mejorar el sistema desarrollado en la Semana 15
+
 
 ---
 
 ## 📁 Estructura del proyecto
 
 ```
-S15-POO-TareasGUI--Sigcha-Joselyn/ lista_tareas_app/
+S16-POO-ListaTareasGUI--Sigcha-Joselyn/ lista_tareas_app/
 │
 ├── modelos/
 │   └── tarea.py             # Clase Tarea (id, descripcion, estado_completado)
 ├── servicios/
 │   └── tarea_servicio.py    # Lógica: agregar, completar, eliminar, listar
 └── ui/
-│    └── app_tkinter.py      # Interfaz Tkinter + captura de eventos
+│    └── app_tkinter.py      # Interfaz Tkinter + captura de eventos y atajos
 │
 ├── main.py                  # Orquestador y punto de arranque
 │
-├── dist/                    # Ejecutable (.exe)
 ├── README.md                # Documentación del proyecto
 └── .gitignore               # Archivos y carpetas que Git debe ignorar
 ```
@@ -98,8 +107,10 @@ Desarrollada con *Tkinter*.
 | Añadir tarea rápido | Tecla **Enter** en el campo de texto|
 | Marcar completada | Botón **✔ Marcar Completada** |
 | Marcar completada rápido | **Doble clic** sobre la tarea en la lista|
+| Atajo tarea completada | Teclas **Ctrl+C** sobre la tarea en la lista |
 | Eliminar tarea | Botón **🗑 Eliminar** (con confirmación) |
-
+| Atajo para eliminar tarea | Tecla **Delete / Ctrl + D** (con confirmación) |
+| Atajo cerrar la aplicación | Tecla **Esc** (con confirmación) |
 ---
 
 ## 🎨 Feedback Visual
@@ -115,9 +126,11 @@ Desarrollada con *Tkinter*.
   - Estado: ✔ Completada  
 
 - El contador en el encabezado muestra `X pendiente(s) / Y total`.
-- Además existe un apartado de indicaciones sobre las acciones rápidas para el usuario.
+- Además existe un apartado de indicaciones sobre las acciones rápidas para el usuario y los atajos aplicados.
 
->✔️ Permite identificar el estado visualmente de forma clara.
+>✔️ Mejora la accesibilidad y reduce el uso del mouse  
+>✔️ Optimiza la experiencia del usuario al identificar el estado de la tarea de forma visual clara.
+
 
 ---
 
@@ -129,6 +142,18 @@ self._entry_tarea.bind("<Return>", self._on_enter)
 
 # Evento de ratón (doble clic)
 self._tree.bind("<Double-1>", self._doble_click)
+
+# Evento de teclado (Ctrl+C) 
+self.root.bind("<Control-c>", self._atajo_completar)
+self.root.bind("<Control-C>", self._atajo_completar)
+        
+# Evento de teclado (Delete o Ctrl+D)
+self.root.bind("<Delete>", self._atajo_eliminar)
+self.root.bind("<Control-d>", self._atajo_eliminar)
+self.root.bind("<Control-D>", self._atajo_eliminar)
+       
+# Evento de teclado (Escape)
+self.root.bind("<Escape>", self._atajo_salir)
 
 ```
 > ✔️ Cumple con los requisitos de eventos avanzados.
@@ -155,6 +180,20 @@ self._tree.bind("<Double-1>", self._doble_click)
 5. Se abrirá la interfaz gráfica del sistema de tareas.
 
 ---
+## 🚀 Evolución del sistema (Semana 16)
+
+Esta versión representa una mejora del sistema desarrollado previamente, enfocada en la optimización de la interacción del usuario.
+
+Se añadieron:
+
+- Atajos de teclado para acciones principales
+- Barra de eventos con mensajes en tiempo real
+- Mayor fluidez en la navegación
+- Mejora en la accesibilidad y usabilidad
+
+>✔️ Se mantiene la arquitectura original sin alterar la separación de responsabilidades.
+
+---
 
 ## 🧠 Buenas prácticas aplicadas
 
@@ -164,7 +203,10 @@ self._tree.bind("<Double-1>", self._doble_click)
 - ✔️ Inyección de dependencias  
 - ✔️ Manejo de eventos  
 - ✔️ Código modular  
-- ✔️ Uso de ttk.Treeview con estilos  
+- ✔️ Uso de ttk.Treeview con estilos 
+- ✔️ Mejora de UX mediante atajos de teclado
+- ✔️ Feedback en tiempo real por la barra de eventos.
+
 
 ---
 
@@ -174,7 +216,5 @@ Este proyecto implementa una aplicación GUI completa en Python, integrando:
 
 - Arquitectura limpia  
 - Interacción dinámica  
-- Eventos de teclado y ratón  
+- Eventos de teclado y ratón (Atajos)
 - Feedback visual claro  
-
-Además, el uso de PyInstaller permite distribuir la aplicación como ejecutable funcional.
