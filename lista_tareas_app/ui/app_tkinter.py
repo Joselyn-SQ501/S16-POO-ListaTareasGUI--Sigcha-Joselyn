@@ -37,6 +37,7 @@ class AppTkinter:
         self._entry_tarea:  tk.Entry     = None  
         self._tree:         ttk.Treeview = None  
         self._lbl_contador: tk.Label     = None
+        self._lbl_evento: tk.Label     = None
         
         # Construye todos los elementos de la interfaz
         self._configurar_ventana()
@@ -64,6 +65,7 @@ class AppTkinter:
         self._crear_seccion_entrada()
         self._crear_tabla_tareas()
         self._crear_barra_indicaciones()
+        self._crear_barra_eventos()
     
     # Submétodo para crear el encabezado
     def _crear_header(self):
@@ -237,22 +239,90 @@ class AppTkinter:
         # Texto de indicaciones para el usuario
         tk.Label(
             indications,
-            text="↩ Enter para añadir   |   Doble clic para completar",
+            text="↩ Enter (añadir) | Doble clic o Ctrl+C (completar) | Ctrl+D/Delete (eliminar) | Esc (salir)",
             font=FONT_HINT,
             fg=COLORS["COLOR_MUTED"],
             bg=COLORS["COLOR_BG"],
         ).pack(side="right")
     
+    # Barra de eventos para mostrar mensajes relacionados con las acciones del usuario, como confirmaciones o errores, proporcionando retroalimentación inmediata sobre las interacciones con la aplicación
+    def _crear_barra_eventos(self):
+        frame_evento = tk.Frame(self.root, bg=COLORS["COLOR_BG"])
+        frame_evento.pack(fill="x", padx=24, pady=(0, 10))
+
+        self._lbl_evento = tk.Label(
+            frame_evento,
+            text="Eventos del sistema aparecerán aquí...",
+            font=FONT_HINT,
+            fg=COLORS["COLOR_ACCENT2"],
+            bg=COLORS["COLOR_BG"]
+        )
+        self._lbl_evento.pack(side="left")
+
     # Método encargado de registrar los eventos de usuario
     def _registrar_eventos(self):
         # Evento de doble click
         self._tree.bind("<Double-1>", self._doble_click)
+        
         # Evento de presionar Enter en el campo de entrada para agregar la tarea
         self._entry_tarea.bind("<Return>", self._on_enter)
+        
+        # Evento de atajo de teclado para completar tarea con teclas Ctrl+C 
+        self.root.bind("<Control-c>", self._atajo_completar)
+        self.root.bind("<Control-C>", self._atajo_completar)
+        
+        # Evento de eliminar tarea seleccionada con Delete o Ctrl+D
+        self.root.bind("<Delete>", self._atajo_eliminar)
+        self.root.bind("<Control-d>", self._atajo_eliminar)
+        self.root.bind("<Control-D>", self._atajo_eliminar)
+       
+        # Evento de cerrar aplicación con Escape
+        self.root.bind("<Escape>", self._atajo_salir)
+        
         # Evento de cierre de ventana para confirmar antes de salir de la aplicación
         self.root.protocol ("WM_DELETE_WINDOW", self._cerrar_aplicacion)
+    
+    # Eventos 
+    
+    # Evento para agregar tareas al presionar Enter
+    def _on_enter(self, event):
+        self._lbl_evento.config(text="Enter detectado → tarea añadida")
+        self._agregar()
 
-   
+    # Evento para completar tareas al hacer doble clic sobre ellas en la tabla
+    def _doble_click(self, event):
+        self._lbl_evento.config(text="Doble clic → tarea completada")
+        self._completar()
+
+    # Evento para completar tareas con atajo de teclado Ctrl+C
+    def _atajo_completar(self, event):
+        if self.root.focus_get() == self._entry_tarea:
+            return
+        self._lbl_evento.config(text="Tecla Ctrl+C → completar tarea")
+        self._completar()
+
+    #   Evento para eliminar tareas con atajo de teclado Ctrl+D o Delete
+    def _atajo_eliminar(self, event):
+        if self.root.focus_get() == self._entry_tarea:
+            return
+        self._lbl_evento.config(text="Tecla Ctrl+D/Delete → eliminar tarea seleccionada")
+        self._eliminar()
+
+    #  Evento para cerrar la aplicación con atajo de teclado Escape, mostrando un mensaje de confirmación antes de proceder con el cierre
+    def _atajo_salir(self, event):
+        self._lbl_evento.config(text="Tecla Escape → cerrando aplicación")
+        self._cerrar_aplicacion()
+    
+    # Evento para confirmar antes de cerrar la aplicación, evitando cierres accidentales y pérdida de datos no guardados
+    def _cerrar_aplicacion(self):
+        confirmado = messagebox.askyesno(
+            "Salir de la aplicación",
+            "¿Estás seguro de que deseas cerrar la aplicación?",
+            parent=self.root,
+        )
+        if confirmado:
+            self.root.destroy()
+
     # Método de acción para agregar tareas con sus debidas validaciones
     def _agregar(self):
         try:
@@ -261,10 +331,6 @@ class AppTkinter:
             self._refrescar()
         except Exception as e:
             messagebox.showerror("Entrada inválida", str(e), parent=self.root)
-    
-    # Método de acción para agregar tareas al presionar Enter
-    def _on_enter(self, event):
-        self._agregar()
     
     # Método de acción para completar tareas, obteniendo la tarea seleccionada y manejando posibles errores
     def _completar(self):
@@ -300,21 +366,6 @@ class AppTkinter:
             
             except KeyError as e:
                 messagebox.showerror("Error", str(e), parent=self.root)
-    
-    
-    # Método de acción para completar tareas al hacer doble clic sobre ellas en la tabla
-    def _doble_click(self, event):
-        self._completar()
-    
-    # Método de acción para confirmar antes de cerrar la aplicación, evitando cierres accidentales y pérdida de datos no guardados
-    def _cerrar_aplicacion(self):
-        confirmado = messagebox.askyesno(
-            "Salir de la aplicación",
-            "¿Estás seguro de que deseas cerrar la aplicación?",
-            parent=self.root,
-        )
-        if confirmado:
-            self.root.destroy()
     
     # Método privado para obtener la tarea seleccionada en la tabla, con opción de mostrar un mensaje de advertencia si no hay selección
     def _get_selected(self, silencioso: bool = False):
